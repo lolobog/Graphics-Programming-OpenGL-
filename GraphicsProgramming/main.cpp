@@ -6,6 +6,8 @@
 #include<gtc/type_ptr.hpp>
 #include<SDL.h>
 #include<iostream>
+#include "mesh.h"
+
 
 
 #undef main SDL_main
@@ -87,8 +89,9 @@ int main()
 	const char* VertexShadeCode =
 		"#version 450\n"
 		"in vec3 vp;"
+		"uniform mat4 model;"
 		"void main(){"
-		"gl_Position=vec4(vp,1.0);"
+		"gl_Position=model * vec4(vp,1.0);"
 		"}";
 
 		const char* FragmentShadeCode=
@@ -115,6 +118,14 @@ int main()
 		glValidateProgram(ShaderPrograme);
 		CheckShaderError(ShaderPrograme, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
+
+		Mesh Tri1(Vericies, 3);
+
+
+
+
+
+
 		
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
 		glViewport(0, 0, 800, 600);
@@ -129,6 +140,10 @@ int main()
 		glUseProgram(ShaderPrograme);
 		glBindVertexArray(VertexArrayObject);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		GLint modelLoc = glGetUniformLocation(ShaderPrograme, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Tri1.m_transform.GetModel()[0][0]);
+		Tri1.Draw();
 
 		SDL_Delay(16);
 
