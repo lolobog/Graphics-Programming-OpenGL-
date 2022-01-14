@@ -5,33 +5,17 @@
 #include<glm.hpp>
 #include<gtc/type_ptr.hpp>
 #include<SDL.h>
-#include<iostream>
 #include "mesh.h"
+#include "Shader.h"
+
+
 
 
 
 #undef main SDL_main
 using namespace std;
 
-void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const string& errorMessage)
-{
-	GLint success = 0;
-	GLchar error[1024] = { 0 };
-	if (isProgram)
-		glGetProgramiv(shader, flag, &success);
-	else
-		glGetShaderiv(shader, flag, &success);
 
-	if (success == GL_FALSE)
-	{
-		if (isProgram)
-			glGetProgramInfoLog(shader, sizeof(error), NULL, error);
-		else
-			glGetShaderInfoLog(shader, sizeof(error), NULL, error);
-		cerr << errorMessage << ": '" << error << "'" << endl;
-
-	}
-}
 
 
 
@@ -66,7 +50,7 @@ int main()
 	}
 
 	//Triangle points
-	float Vericies[]{
+	float Verticies[]{
 		0.0f,0.5f,0.0f,
 		0.5f,-0.5f,0.0f,
 		-0.5f,-0.5f,0.0f };
@@ -75,7 +59,7 @@ int main()
 	GLuint VertexBufferObject = 0;
 	glGenBuffers(1, &VertexBufferObject);
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), Vericies, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), Verticies, GL_STATIC_DRAW);
 	//Create an array of vertixes 
 	GLuint VertexArrayObject = 0;
 	glGenVertexArrays(1, &VertexArrayObject);
@@ -85,44 +69,15 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindVertexArray(0);
-	//Shader Code
-	const char* VertexShadeCode =
-		"#version 450\n"
-		"in vec3 vp;"
-		"uniform mat4 model;"
-		"void main(){"
-		"gl_Position=model * vec4(vp,1.0);"
-		"}";
-
-		const char* FragmentShadeCode=
-			"#version 450\n"
-			"out vec4 frag_colour;"
-			"void main(){"
-		" frag_colour = vec4(0.5,1.0,0.5,1.0);"
-			"}";
-		//Combining the vertex shader code with the actual object
-		GLuint VertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(VertexShader, 1,&VertexShadeCode, NULL);
-		glCompileShader(VertexShader);
-		//Combining the fragment shader code with the actual object
-		GLuint FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(FragmentShader, 1, &FragmentShadeCode, NULL);
-		glCompileShader(FragmentShader);
-		//Creating the shader program and giving it the vertex shader and fragment shader
-		GLuint ShaderPrograme = glCreateProgram();
-		glAttachShader(ShaderPrograme, VertexShader);
-		glAttachShader(ShaderPrograme, FragmentShader);
-
-		glLinkProgram(ShaderPrograme);
-		CheckShaderError(ShaderPrograme, GL_LINK_STATUS, true, "Error: program linking failed: ");
-		glValidateProgram(ShaderPrograme);
-		CheckShaderError(ShaderPrograme, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
 
-		Mesh Tri1(Vericies, 3);
+		Mesh Tri1(Verticies, 3);
+		Camera cam;
+		Shader* basicShader = new Shader( "Shaders/Resources/Basic", cam);
+		
+		
 
-
-
+		
 
 
 
@@ -137,17 +92,45 @@ int main()
 	{
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(ShaderPrograme);
 		glBindVertexArray(VertexArrayObject);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		GLint modelLoc = glGetUniformLocation(ShaderPrograme, "model");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &Tri1.m_transform.GetModel()[0][0]);
+
+
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			const Uint8* keyState = SDL_GetKeyboardState(NULL);
+			if (keyState[SDL_SCANCODE_W])
+			{
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, -0.1, 0));
+			}
+			if (keyState[SDL_SCANCODE_S])
+			{
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0.1, 0));
+			}
+			if (keyState[SDL_SCANCODE_D])
+			{
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0.1, 0, 0));
+			}
+			if (keyState[SDL_SCANCODE_A])
+			{
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(-0.1, 0, 0));
+			}
+		
+
+
+			
+				
+		}
+		basicShader->Bind();
+		basicShader->Update(Tri1.m_transform);
 		Tri1.Draw();
 
+		
 		SDL_Delay(16);
-
 		SDL_GL_SwapWindow(window);
+		
 	}
 
 

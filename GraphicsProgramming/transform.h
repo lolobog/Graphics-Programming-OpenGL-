@@ -18,7 +18,9 @@ public:
 
 	
 	vec3 GetPosition() { return m_position; }
-	void SetPosition(vec3 _positon) { m_position = _positon; }
+	void SetPosition(vec3 _positon) { 
+		m_position = _positon;
+	}
 
 	vec3 GetRoatation() { return m_rotation; }
 	void SetRotation(vec3 _rotation) { m_rotation = _rotation; }
@@ -27,12 +29,12 @@ public:
 	void SetScale(vec3 _scale) { m_scale = _scale; }
 
 	Transform* GetTransform() { return this; }
-	void SetTransform(Transform* _transform) 
+	/*void SetTransform(Transform* _transform) 
 	{ 
 		m_position = _transform->GetPosition();
 		m_rotation = _transform->GetRoatation();
 		m_scale = _transform->GetScale();
-	}
+	}*/
 
 	inline mat4 GetModel()const
 	{
