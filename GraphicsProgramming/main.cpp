@@ -7,9 +7,8 @@
 #include<SDL.h>
 #include "mesh.h"
 #include "Shader.h"
-
-
-
+#include "Vertex.h"
+#include <vector>
 
 
 #undef main SDL_main
@@ -49,33 +48,41 @@ int main()
 		cout << "GLEW failed to initialize!" << endl;
 	}
 
-	//Triangle points
-	float Verticies[]{
-		0.0f,0.5f,0.0f,
-		0.5f,-0.5f,0.0f,
-		-0.5f,-0.5f,0.0f };
+	//Creating a square using indices
+	//Square points
+	//float SquareVerticies[]
+	//{
+	//	-0.5f,0.5f,-1.0f,
+	//	0.5f,0.5f,-1.0f,
+	//	-0.5f,-0.5f,-1.0f,
+	//	0.5f,-0.5f,-1.0f
+	//};
 
-	//Creating a buffer and passing the data of our points into it
-	GLuint VertexBufferObject = 0;
-	glGenBuffers(1, &VertexBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), Verticies, GL_STATIC_DRAW);
-	//Create an array of vertixes 
-	GLuint VertexArrayObject = 0;
-	glGenVertexArrays(1, &VertexArrayObject);
-	glBindVertexArray(VertexArrayObject);
-	glEnableVertexAttribArray(0);
-	//Bind the buffer and Vertex array together and tell it how to read the data 
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferObject);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindVertexArray(0);
+	
+	vector <Vertex> SquareVerticies;
+	SquareVerticies.push_back(Vertex(-0.5f, 0.5f, 0.0f));
+	SquareVerticies.push_back(Vertex(0.5f, 0.5f, 0.0f));
+	SquareVerticies.push_back(Vertex(0.5f, -0.5f, 0.0f));
+	SquareVerticies.push_back(Vertex(-0.5f, -0.5f, 0.0f));
+
+	unsigned int SquareIndecies[]
+	{
+		0,1,2,0,2,3
+	};
+	
+
+	
+
+	
 
 
-		Mesh Tri1(Verticies, 3);
+
+
+	
 		Camera cam;
 		Shader* basicShader = new Shader( "Shaders/Resources/Basic", cam);
 		
-		
+		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 
 		
 
@@ -92,8 +99,6 @@ int main()
 	{
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glBindVertexArray(VertexArrayObject);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
 
@@ -124,8 +129,8 @@ int main()
 				
 		}
 		basicShader->Bind();
-		basicShader->Update(Tri1.m_transform);
-		Tri1.Draw();
+		basicShader->Update(Square1.m_transform);
+		Square1.Draw();
 
 		
 		SDL_Delay(16);
