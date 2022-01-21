@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "Vertex.h"
 #include <vector>
+#include"LightBase.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -91,14 +92,15 @@ int main()
 	SquareVerticies.push_back(Vertex(vec3(0.5f, 0.5f, 1.0f), vec2(1, 0), vec3(0, 1, 0))); //top right
 	SquareVerticies.push_back(Vertex (vec3(0.5f, -0.5f, 1.0f), vec2(1, 1), vec3(0, 0, 1))); //bottom right
 	SquareVerticies.push_back(Vertex (vec3(-0.5f, -0.5f, 1.0f), vec2(0, 1), vec3(1, 1, 1))); //bottom left
-	SquareVerticies.push_back(Vertex(vec3(-0.35f, -0.75f, 3.0f), vec2(0, 1), vec3(1, 1, 1))); //bottom left
 	unsigned int SquareIndecies[]
 	{
-		0,1,2,0,2,3,0,4,1
+		0,1,2,0,2,3,
 	};
 	
 
-	
+	LightBase* light=new LightBase() ;
+	light->GetTransform().SetPosition(vec3(0.5, 0.5, -6));
+
 
 	
 
@@ -155,14 +157,18 @@ int main()
 			
 				
 		}
+		light->Draw(&cam);
 		basicShader->Bind();
-
 		glActiveTexture(GL_TEXTURE0);
 		GLuint TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_diffuse");
 		glUniform1i(TextureLoc, 0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		basicShader->Update(Square1.m_transform);
+		basicShader->Update(Square1.m_transform,*light);
 		Square1.Draw();
+
+
+
+		
 
 		
 		SDL_Delay(16);

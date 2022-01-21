@@ -5,6 +5,7 @@
 #include "transform.h"
 #include "Camera.h"
 #include <iostream>
+#include "LightBase.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ public:
 	Shader(const string FileLocation, Camera& camera);
 	~Shader();
 
-	void Update(Transform& transform);
+	void Update(Transform& transform,LightBase& light);
 	void Bind();
 	GLuint GetProgram() { return m_program; }
 
@@ -35,6 +36,9 @@ private:
 		MODEL_U,
 		PROJECTION_U,
 		VIEW_U,
+		FRAG_LIGHTCOLOR_U,
+		FRAG_LIGHTPOS_U,
+		FRAG_CAMERAPOS_U,
 		NUM_UNIFORMS
 	};
 	GLuint m_uniforms[NUM_UNIFORMS];

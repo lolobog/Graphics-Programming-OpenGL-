@@ -1,16 +1,44 @@
 #version 450
 
 uniform sampler2D texture_diffuse;
-
+uniform vec3 FragLightColor;
+uniform vec3 FragLightPos;
+uniform vec3 FragCamPos;
 
 in vec2 FragTextureCoord;
 in vec3 FragColorIn;
+in vec3 FragNormal;
+in vec3 FragPos;
+
+
 out vec4 frag_colour;
 
 
 void main()
 {
-	//frag_colour = vec4(FragColorIn,1.0f);	
+	
 
-	frag_colour=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb,1);
+	//ambient
+	float ambientStrength=1f;
+
+	vec3 ambient=ambientStrength*FragLightColor;
+
+	
+	//diffuse
+	vec3 normal=normalize(FragNormal);
+	vec3 lightDir=normalize(FragLightPos-FragPos);
+	float diff=(max(dot(normal,lightDir),0.0f));
+	vec3 diffuse=diff*FragLightColor;
+
+	//specular
+	float specularStrength=1f;
+	vec3 viewDir=normalize( FragCamPos - FragPos);
+	vec3 reflectDir=reflect(lightDir,viewDir);
+	float spec=pow(max(dot(reflectDir,normal),0.0),1);
+	vec3 specular = vec3(specularStrength*spec);
+
+	vec4 result=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb*(ambient+diffuse+specular),1);
+
+	frag_colour=result;
+
 };

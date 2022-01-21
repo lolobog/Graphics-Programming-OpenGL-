@@ -22,6 +22,12 @@ public:
 
 	}
 
+	Vertex(vec3 position, vec2 texCoord)
+	{
+		this->Position = position;
+		this->TextureCoord = texCoord;
+	}
+
 	Vertex(vec3 position, vec2 texCoord,vec3 color)
 	{
 		this->Position = position;

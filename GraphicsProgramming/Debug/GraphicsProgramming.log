@@ -1,3 +1,6 @@
-﻿  main.cpp
-D:\GraphicsProgramming\GraphicsProgramming\main.cpp(17,1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+﻿  LightBase.cpp
+  Shader.cpp
+  main.cpp
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(18,1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Generating Code...
   GraphicsProgramming.vcxproj -> D:\GraphicsProgramming\Debug\GraphicsProgramming.exe

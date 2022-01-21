@@ -5,11 +5,13 @@
 #include "Vertex.h"
 #include <vector>
 
+
 enum {
 	POSITION_VB,
 	TEXCOORD_VB,
 	COLOR_VB,
 	INDEX_VB,
+	NORMAL_VB,
 	NUM_BUFFERS
 };
 
