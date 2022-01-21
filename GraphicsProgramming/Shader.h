@@ -16,7 +16,7 @@ public:
 
 	void Update(Transform& transform);
 	void Bind();
-
+	GLuint GetProgram() { return m_program; }
 
 private:
 	string Name;

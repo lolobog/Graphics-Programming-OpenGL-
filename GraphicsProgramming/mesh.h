@@ -3,9 +3,12 @@
 #include <glew.h>
 #include"transform.h"
 #include "Vertex.h"
+#include <vector>
 
 enum {
 	POSITION_VB,
+	TEXCOORD_VB,
+	COLOR_VB,
 	INDEX_VB,
 	NUM_BUFFERS
 };

@@ -10,11 +10,43 @@
 #include "Vertex.h"
 #include <vector>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 
 #undef main SDL_main
 using namespace std;
 
+GLuint textureID;
+void LoadTexture(string TextureLocation)
+{
+	int width, height, numComponents;
+	unsigned char* ImageData = stbi_load(TextureLocation.c_str(), &width, &height, &numComponents, STBI_rgb_alpha);
 
+	if (ImageData == NULL)
+	{
+		cerr << "Texture loding failed for texture: " << TextureLocation << endl;
+	}
+
+	GLenum format;
+	if (numComponents == 1)
+		format = GL_RED;
+	if (numComponents == 3)
+		format = GL_RGB;
+	if (numComponents == 4)
+		format = GL_RGBA;
+
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ImageData);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	stbi_image_free(ImageData);
+}
 
 
 
@@ -51,23 +83,18 @@ int main()
 	//Creating a square using indices
 	//Square points
 	//float SquareVerticies[]
-	//{
-	//	-0.5f,0.5f,-1.0f,
-	//	0.5f,0.5f,-1.0f,
-	//	-0.5f,-0.5f,-1.0f,
-	//	0.5f,-0.5f,-1.0f
-	//};
+
 
 	
 	vector <Vertex> SquareVerticies;
-	SquareVerticies.push_back(Vertex(-0.5f, 0.5f, 0.0f));
-	SquareVerticies.push_back(Vertex(0.5f, 0.5f, 0.0f));
-	SquareVerticies.push_back(Vertex(0.5f, -0.5f, 0.0f));
-	SquareVerticies.push_back(Vertex(-0.5f, -0.5f, 0.0f));
-
+	SquareVerticies.push_back(Vertex (vec3(-0.5f, 0.5f, 1.0f),vec2(0,0),vec3(1,0,0))); //top left
+	SquareVerticies.push_back(Vertex(vec3(0.5f, 0.5f, 1.0f), vec2(1, 0), vec3(0, 1, 0))); //top right
+	SquareVerticies.push_back(Vertex (vec3(0.5f, -0.5f, 1.0f), vec2(1, 1), vec3(0, 0, 1))); //bottom right
+	SquareVerticies.push_back(Vertex (vec3(-0.5f, -0.5f, 1.0f), vec2(0, 1), vec3(1, 1, 1))); //bottom left
+	SquareVerticies.push_back(Vertex(vec3(-0.35f, -0.75f, 3.0f), vec2(0, 1), vec3(1, 1, 1))); //bottom left
 	unsigned int SquareIndecies[]
 	{
-		0,1,2,0,2,3
+		0,1,2,0,2,3,0,4,1
 	};
 	
 
@@ -81,7 +108,7 @@ int main()
 	
 		Camera cam;
 		Shader* basicShader = new Shader( "Shaders/Resources/Basic", cam);
-		
+		LoadTexture("Textures/brickwall.jpg");
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 
 		
@@ -129,6 +156,11 @@ int main()
 				
 		}
 		basicShader->Bind();
+
+		glActiveTexture(GL_TEXTURE0);
+		GLuint TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_diffuse");
+		glUniform1i(TextureLoc, 0);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 		basicShader->Update(Square1.m_transform);
 		Square1.Draw();
 
