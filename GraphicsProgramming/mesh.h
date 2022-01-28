@@ -12,6 +12,8 @@ enum {
 	COLOR_VB,
 	INDEX_VB,
 	NORMAL_VB,
+	TANGENT_VB,
+	BITANGENT_VB,
 	NUM_BUFFERS
 };
 
@@ -21,7 +23,7 @@ public:
 	Mesh(Vertex* verts, unsigned int vertCount,unsigned int *indices,unsigned int numIndicies);
 	void Draw();
 	~Mesh();
-
+	void CalculateTangentsBitangent(Vertex* verticies, unsigned int vertCount, unsigned int* indicies, unsigned int numIndicies);
 	Transform m_transform;
 	unsigned int m_vertCount;
 private:
