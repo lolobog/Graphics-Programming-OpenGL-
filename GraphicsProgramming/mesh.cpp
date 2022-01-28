@@ -74,20 +74,32 @@ Mesh::Mesh(Vertex* verts, unsigned int vertCount, unsigned int* indices, unsigne
 		BiTangents.push_back(verts[i].Bitangent);
 		
 	}
-
+	
 	std::vector<vec3> Normals;
 	Normals.resize(vertCount);
 
-	for (unsigned int i = 0; i < numIndicies; i += 3)
-	{
-		vec3 Vert1 = positions[indices[i]];
-		vec3 Vert2 = positions[indices[i+1]];
-		vec3 Vert3 = positions[indices[i+2]];
 
-		vec3 normal = triangleNormal(Vert1, Vert2, Vert3);
-		Normals[indices[i]] += normal;
-		Normals[indices[i+1]] += normal;
-		Normals[indices[i+2]] += normal;
+	for (int i = 0; i < vertCount; i++)
+	{
+		if (verts[i].Normal == vec3(0, 0, 0))
+		{
+			for (unsigned int i = 0; i < numIndicies; i += 3)
+			{
+				vec3 Vert1 = positions[indices[i]];
+				vec3 Vert2 = positions[indices[i + 1]];
+				vec3 Vert3 = positions[indices[i + 2]];
+
+				vec3 normal = triangleNormal(Vert1, Vert2, Vert3);
+				Normals[indices[i]] += normal;
+				Normals[indices[i + 1]] += normal;
+				Normals[indices[i + 2]] += normal;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < vertCount; i++)
+				Normals.push_back(verts[i].Normal);
+		}
 	}
 
 	glGenVertexArrays(1, &m_vertexArrayObject);

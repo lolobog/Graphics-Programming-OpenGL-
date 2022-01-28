@@ -10,6 +10,7 @@
 #include "Vertex.h"
 #include <vector>
 #include"LightBase.h"
+#include "ObjectLoader.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -118,7 +119,14 @@ int main()
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 
 		
+		string AmbiantLoc;
+		string DiffuseLoc;
+		string SpecLoc;
+		string NormalLoc;
 
+		vector<uint>Indecies;
+
+		vector<Vertex>LoadedVerts=OBJLoader::LoadOBJ("Objects")
 
 
 		
