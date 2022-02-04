@@ -62,8 +62,8 @@ Mesh::Mesh(Vertex* verts, unsigned int vertCount, unsigned int* indices, unsigne
 	std::vector <vec3> positions;
 	std::vector<vec2> texCoords;
 	std::vector<vec3> colorInfo;
-	std::vector<vec3>Tangents;
-	std::vector<vec3>BiTangents;
+	//std::vector<vec3>Tangents;
+	//std::vector<vec3>BiTangents;
 
 	for (unsigned int i = 0; i < vertCount; i++)
 	{
@@ -75,7 +75,7 @@ Mesh::Mesh(Vertex* verts, unsigned int vertCount, unsigned int* indices, unsigne
 		
 	}
 	
-	std::vector<vec3> Normals;
+	//std::vector<vec3> Normals;
 	Normals.resize(vertCount);
 
 

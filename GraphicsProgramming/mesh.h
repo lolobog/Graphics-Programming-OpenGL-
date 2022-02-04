@@ -26,6 +26,11 @@ public:
 	void CalculateTangentsBitangent(Vertex* verticies, unsigned int vertCount, unsigned int* indicies, unsigned int numIndicies);
 	Transform m_transform;
 	unsigned int m_vertCount;
+
+
+	std::vector<vec3>Tangents;
+	std::vector<vec3>BiTangents;
+	std::vector<vec3> Normals;
 private:
 	GLuint m_vertexBufferObjects[NUM_BUFFERS];
 	GLuint m_vertexArrayObject = 0;

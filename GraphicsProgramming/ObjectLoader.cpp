@@ -1,7 +1,7 @@
 #include "ObjectLoader.h"
 
 
-vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc, const string& FileLoc, string& AmbiantLoc, string& DiffLoc, string& specLoc, string& NormalLoc, vector<glm::uint>& indicies)
+vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc, string& AmbiantLoc, string& DiffLoc, string& specLoc, string& NormalLoc, vector<glm::uint>& indicies)
 {
 	string line; // the next line of text from the file
 	string MatLibName; //the name of the mtl lib
@@ -38,6 +38,14 @@ vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc,
 						MeshName = line.substr(line.find(' '), line.find('\n'));
 					}
 					else
+						if (FirstWord == "v")
+						{
+							string VertValues = line.substr(line.find(' '), line.find('\n'));
+							float x, y, z;
+							sscanf_s(VertValues.c_str(), "%f %f %f", &x, &y, &z);
+							VertPositions.push_back(glm::vec3(x, y, z));
+						}
+						else
 						if (FirstWord == "vn")
 						{
 							string VertNormValues = line.substr(line.find(' '), line.find('\n'));
@@ -74,16 +82,16 @@ vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc,
 											&TmpPosition[2], &TmpTexCoords[2], &TmpNormals[2]);
 
 										vertsInFace[0].Position = VertPositions[TmpPosition[0] - 1];
-										vertsInFace[0].TextureCoord = VertTextureCoords[TmpPosition[0] - 1];
-										vertsInFace[0].Normal = VertPositions[TmpPosition[0] - 1];
+										vertsInFace[0].TextureCoord = VertTextureCoords[TmpTexCoords[0] - 1];
+										vertsInFace[0].Normal = VertPositions[TmpNormals[0] - 1];
 
 										vertsInFace[1].Position = VertPositions[TmpPosition[1] - 1];
-										vertsInFace[1].TextureCoord = VertTextureCoords[TmpPosition[1] - 1];
-										vertsInFace[1].Normal = VertPositions[TmpPosition[1] - 1];
+										vertsInFace[1].TextureCoord = VertTextureCoords[TmpTexCoords[1] - 1];
+										vertsInFace[1].Normal = VertPositions[TmpNormals[1] - 1];
 
 										vertsInFace[2].Position = VertPositions[TmpPosition[2] - 1];
-										vertsInFace[2].TextureCoord = VertTextureCoords[TmpPosition[2] - 1];
-										vertsInFace[2].Normal = VertPositions[TmpPosition[2] - 1];
+										vertsInFace[2].TextureCoord = VertTextureCoords[TmpTexCoords[2] - 1];
+										vertsInFace[2].Normal = VertPositions[TmpNormals[2] - 1];
 
 										FinalVerts.push_back(vertsInFace[0]);
 										FinalVerts.push_back(vertsInFace[0]);

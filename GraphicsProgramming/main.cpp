@@ -1,5 +1,5 @@
 #define GLEW_STATIC
-
+//You know about the triangle light issue
 #include <glew.h>
 #include <SDL_opengl.h>
 #include<glm.hpp>
@@ -103,7 +103,7 @@ int main()
 	
 
 	LightBase* light=new LightBase() ;
-	light->GetTransform().SetPosition(vec3(0.5, 0.5, -6));
+	light->GetTransform().SetPosition(vec3(0, 0, -2));
 
 
 	
@@ -119,15 +119,16 @@ int main()
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 
 		
-		string AmbiantLoc;
-		string DiffuseLoc;
-		string SpecLoc;
-		string NormalLoc;
+		string* AmbiantLoc = new string("");
+		string* DiffuseLoc = new string("");
+		string* SpecLoc = new string("");
+		string* NormalLoc = new string("");
 
 		vector<uint>Indecies;
 
-		vector<Vertex>LoadedVerts=OBJLoader::LoadOBJ("Objects")
+		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","./Objects",*AmbiantLoc,*DiffuseLoc,*SpecLoc,*NormalLoc,Indecies);
 
+		GLuint
 
 		
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
@@ -169,22 +170,24 @@ int main()
 			
 				
 		}
-		light->Draw(&cam);
+		
+
 		basicShader->Bind();
 		glActiveTexture(GL_TEXTURE0);
 		GLuint TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_diffuse");
 		glUniform1i(TextureLoc, 0);
 		glBindTexture(GL_TEXTURE_2D, DiffuseTextureID);
-		basicShader->Update(Square1.m_transform,*light);
+		
 
 		glActiveTexture(GL_TEXTURE1);
 		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_normal");
 		glUniform1i(TextureLoc, 1);
 		glBindTexture(GL_TEXTURE_2D,NormalTextureID);
+		basicShader->Update(Square1.m_transform, *light);
 		Square1.Draw();
 
 
-
+		light->Draw(&cam);
 		
 
 		

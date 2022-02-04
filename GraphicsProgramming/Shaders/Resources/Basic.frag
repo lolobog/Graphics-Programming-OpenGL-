@@ -44,7 +44,7 @@ void main()
 	vec3 specular = vec3(specularStrength*spec);
 
 	vec4 result=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb*(ambient+diffuse+specular),1);
-	//vec4 result = vec4(vec3(FragTextureCoord,0), 1);
+	//result = vec4(FragPos, 1);
 	frag_colour=result;
 
 };

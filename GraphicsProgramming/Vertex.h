@@ -7,7 +7,7 @@ struct Vertex
 	glm::vec3 Color;
 	glm::vec3 Tangent;
 	glm::vec3 Bitangent;
-	glm::vec3 Normal= vec3(0,0,0);
+	glm::vec3 Normal= glm::vec3(0,0,0);
 
 public:
 	Vertex(float X, float Y, float Z)
@@ -37,7 +37,7 @@ public:
 			Bitangent = vert.Bitangent;
 	}
 
-	Vertex();
+	Vertex() {}
 	
 	Vertex(glm::vec3 position) :Vertex(position.x, position.y, position.z)
 	{

@@ -149,6 +149,7 @@
     <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="transform.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
