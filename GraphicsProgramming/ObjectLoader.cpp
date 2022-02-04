@@ -1,5 +1,59 @@
 #include "ObjectLoader.h"
 
+void OBJLoader::LoadMaterial(const string& MatLibLoc, string& AmbiantLoc, string& DiffLoc, string& specLoc, string& NormalLoc)
+{
+	std::ifstream file;
+	const char* fileNameChar = MatLibLoc.c_str();
+	file.open(fileNameChar, ifstream::in);
+	string line;
+	string MatName;
+
+	if (file.is_open())
+	{
+		while (file.good())
+		{
+			getline(file, line);
+			if (line[0] != '#')
+			{
+				string FirstWord = line.substr(0, line.find(' '));
+				if (strstr(FirstWord.c_str(), "newmtl"))
+				{
+					MatName = line.substr(line.find(' ') + 1, line.find('\n'));
+				}
+				else
+					if (strstr(FirstWord.c_str(), "map_Ka"))
+					{
+						AmbiantLoc = line.substr(line.find(' ') + 1, line.find('\n'));
+					}
+					else
+						if (strstr(FirstWord.c_str(), "map_Kd"))
+						{
+							DiffLoc = line.substr(line.find(' ') + 1, line.find('\n'));
+						}
+						else
+							if (strstr(FirstWord.c_str(), "map_Ks"))
+							{
+								specLoc = line.substr(line.find(' ') + 1, line.find('\n'));
+							}
+							else
+								if (strstr(FirstWord.c_str(), ""))
+								{
+									NormalLoc = line.substr(line.find(' ') + 1, line.find('\n'));
+								}
+			}
+
+		}
+
+	}
+	else
+		cerr << "Unable to load text file: " << MatLibLoc << endl;
+
+	file.close();
+}
+
+
+
+
 
 vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc, string& AmbiantLoc, string& DiffLoc, string& specLoc, string& NormalLoc, vector<glm::uint>& indicies)
 {
@@ -114,53 +168,3 @@ vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc,
 	return FinalVerts;
 }
 
-void OBJLoader::LoadMaterial(const string& MatLibLoc, string& AmbiantLoc, string& DiffLoc, string& specLoc, string& NormalLoc)
-{
-	std::ifstream file;
-	const char* fileNameChar = MatLibLoc.c_str();
-	file.open(fileNameChar,ifstream::in);
-	string line;
-	string MatName;
-
-	if (file.is_open())
-	{
-		while (file.good())
-		{
-			getline(file, line);
-			if (line[0] != '#')
-			{
-				string FirstWord = line.substr(0, line.find(' '));
-				if (strstr(FirstWord.c_str(), "newmtl"))
-				{
-					MatName = line.substr(line.find(' ') + 1, line.find('\n'));
-				}
-				else
-					if (strstr(FirstWord.c_str(), "map_Ka"))
-					{
-						AmbiantLoc = line.substr(line.find(' ') + 1, line.find('\n'));
-					}
-					else
-						if (strstr(FirstWord.c_str(), "map_Kd"))
-						{
-							DiffLoc = line.substr(line.find(' ') + 1, line.find('\n'));
-						}
-						else
-							if (strstr(FirstWord.c_str(), "map_Ks"))
-							{
-								specLoc = line.substr(line.find(' ') + 1, line.find('\n'));
-							}
-							else
-								if (strstr(FirstWord.c_str(), ""))
-								{
-									NormalLoc = line.substr(line.find(' ') + 1, line.find('\n'));
-								}
-			}
-
-		}
-
-	}
-	else
-		cerr << "Unable to load text file: " << MatLibLoc << endl;
-
-	file.close();
-}

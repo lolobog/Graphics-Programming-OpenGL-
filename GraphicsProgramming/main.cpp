@@ -100,6 +100,8 @@ int main()
 	{
 		0,1,2,0,2,3,
 	};
+
+	
 	
 
 	LightBase* light=new LightBase() ;
@@ -119,16 +121,26 @@ int main()
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 
 		
-		string* AmbiantLoc = new string("");
-		string* DiffuseLoc = new string("");
-		string* SpecLoc = new string("");
-		string* NormalLoc = new string("");
+		//string* AmbiantLoc = new string("");
+		//string* DiffuseLoc = new string("");
+		//string* SpecLoc = new string("");
+		//string* NormalLoc = new string("");
+
+		string AmbiantLoc ;
+		string DiffuseLoc ;
+		string SpecLoc ;
+		string NormalLoc ;
 
 		vector<uint>Indecies;
 
-		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","./Objects",*AmbiantLoc,*DiffuseLoc,*SpecLoc,*NormalLoc,Indecies);
+		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
+		
+		GLuint AmbiantTexID = LoadTexture("Objects//" + AmbiantLoc);
+		GLuint DiffuseTexID = LoadTexture("Objects//"+ DiffuseLoc);
+		GLuint SpecularTexID = LoadTexture("Objects//"+ SpecLoc);
+		GLuint NormalTexID = LoadTexture("Objects//" + NormalLoc);
 
-		GLuint
+		Mesh LoadedObj(&LoadedVerts[0], LoadedVerts.size(), &Indecies[0], Indecies.size());
 
 		
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
@@ -184,7 +196,9 @@ int main()
 		glUniform1i(TextureLoc, 1);
 		glBindTexture(GL_TEXTURE_2D,NormalTextureID);
 		basicShader->Update(Square1.m_transform, *light);
-		Square1.Draw();
+		//Square1.Draw();
+
+		LoadedObj.Draw();
 
 
 		light->Draw(&cam);
