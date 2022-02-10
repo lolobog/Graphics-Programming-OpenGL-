@@ -185,6 +185,7 @@ int main()
 		
 
 		basicShader->Bind();
+		//Created object
 		glActiveTexture(GL_TEXTURE0);
 		GLuint TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_diffuse");
 		glUniform1i(TextureLoc, 0);
@@ -195,15 +196,24 @@ int main()
 		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_normal");
 		glUniform1i(TextureLoc, 1);
 		glBindTexture(GL_TEXTURE_2D,NormalTextureID);
-		basicShader->Update(Square1.m_transform, *light);
+		//basicShader->Update(Square1.m_transform, *light);
 		//Square1.Draw();
+
+		//Loaded object
+		//Giving the loaded object the diffuse
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, DiffuseTexID);
+		//Giving the loaded object the normal
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, NormalTexID);
+
+		basicShader->Update(LoadedObj.m_transform, *light);
 
 		LoadedObj.Draw();
 
-
 		light->Draw(&cam);
 		
-
+		
 		
 		SDL_Delay(16);
 		SDL_GL_SwapWindow(window);
