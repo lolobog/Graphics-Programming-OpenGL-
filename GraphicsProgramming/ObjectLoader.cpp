@@ -36,7 +36,7 @@ void OBJLoader::LoadMaterial(const string& MatLibLoc, string& AmbiantLoc, string
 								specLoc = line.substr(line.find(' ') + 1, line.find('\n'));
 							}
 							else
-								if (strstr(FirstWord.c_str(), ""))
+								if (strstr(FirstWord.c_str(), "map_bump"))
 								{
 									NormalLoc = line.substr(line.find(' ') + 1, line.find('\n'));
 								}

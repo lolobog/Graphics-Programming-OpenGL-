@@ -31,7 +31,7 @@ GLuint LoadTexture(string TextureLocation)
 		cerr << "Texture loding failed for texture: " << TextureLocation << endl;
 	}
 
-	GLenum format;
+	GLenum format=0;
 	if (numComponents == 1)
 		format = GL_RED;
 	if (numComponents == 3)
@@ -135,10 +135,10 @@ int main()
 
 		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
 		
-		GLuint AmbiantTexID = LoadTexture("Objects//" + AmbiantLoc);
-		GLuint DiffuseTexID = LoadTexture("Objects//"+ DiffuseLoc);
-		GLuint SpecularTexID = LoadTexture("Objects//"+ SpecLoc);
-		GLuint NormalTexID = LoadTexture("Objects//" + NormalLoc);
+		GLuint AmbiantTexID = LoadTexture("Objects/" + AmbiantLoc);
+		GLuint DiffuseTexID = LoadTexture("Objects/"+ DiffuseLoc);
+		GLuint SpecularTexID = LoadTexture("Objects/"+ SpecLoc);
+		GLuint NormalTexID = LoadTexture("Objects/" + NormalLoc);
 
 		Mesh LoadedObj(&LoadedVerts[0], LoadedVerts.size(), &Indecies[0], Indecies.size());
 
