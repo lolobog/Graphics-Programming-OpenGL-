@@ -69,5 +69,7 @@
   <ItemGroup>
     <None Include="Shaders\Resources\Basic.frag" />
     <None Include="Shaders\Resources\Basic.vert" />
+    <None Include="Shaders\Resources\DepthShader.frag" />
+    <None Include="Shaders\Resources\DepthShader.vert" />
   </ItemGroup>
 </Project>

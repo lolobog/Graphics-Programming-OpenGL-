@@ -41,6 +41,11 @@ void Shader::Bind()
 	glUseProgram(m_program);
 }
 
+void Shader::UpdateForShadow(Transform& transform, glm::mat4& LightSpaceMatrix)
+{
+	glUniformMatrix4fv(glGetUniformLocation(m_program,))
+}
+
 static GLuint CreateShader(const string& ShaderSource, GLenum shaderType)
 {
 	GLuint shader = glCreateShader(shaderType);

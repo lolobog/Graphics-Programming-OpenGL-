@@ -154,7 +154,7 @@ Mesh::Mesh(Vertex* verts, unsigned int vertCount, unsigned int* indices, unsigne
 void Mesh::Draw()
 {
 	glBindVertexArray(m_vertexArrayObject);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_vertCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 

@@ -19,6 +19,11 @@ public:
 	void Bind();
 	GLuint GetProgram() { return m_program; }
 
+
+	void UpdateForShadow(Transform& transform, glm::mat4& LightSpaceMatrix);
+	
+
+
 private:
 	string Name;
 	GLuint m_program;
@@ -62,4 +67,8 @@ static void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const s
 		cerr << errorMessage << ": '" << error << "'" << endl;
 
 	}
+
+	
+		
 }
+

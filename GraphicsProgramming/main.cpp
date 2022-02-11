@@ -115,10 +115,14 @@ int main()
 
 	
 		Camera cam;
-		Shader* basicShader = new Shader( "Shaders/Resources/Basic", cam);
-		GLuint DiffuseTextureID=LoadTexture("Textures/brickwall.jpg");
-		GLuint NormalTextureID = LoadTexture("Textures/brickwall_normal.jpg");
+		Shader* basicShader = new Shader( "D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/Basic", cam);
+		Shader* depthShader = new Shader("D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/DepthShader", cam);
+		GLuint DiffuseTextureID=LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Textures/brickwall.jpg");
+		GLuint NormalTextureID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Textures/brickwall_normal.jpg");
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
+		Square1.m_transform.SetScale(vec3(60));
+		Square1.m_transform.SetRotation(vec3(glm::radians(90.0f), 0.0f, 0.0f));
+		Square1.m_transform.SetPosition(vec3(0, 60, 0));
 
 		
 		//string* AmbiantLoc = new string("");
@@ -133,28 +137,71 @@ int main()
 
 		vector<uint>Indecies;
 
-		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
+		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","D:/GraphicsProgramming/GraphicsProgramming/Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
 		
-		GLuint AmbiantTexID = LoadTexture("Objects/" + AmbiantLoc);
-		GLuint DiffuseTexID = LoadTexture("Objects/"+ DiffuseLoc);
-		GLuint SpecularTexID = LoadTexture("Objects/"+ SpecLoc);
-		GLuint NormalTexID = LoadTexture("Objects/" + NormalLoc);
+		GLuint AmbiantTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/" + AmbiantLoc);
+		GLuint DiffuseTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/"+ DiffuseLoc);
+		GLuint SpecularTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/"+ SpecLoc);
+		GLuint NormalTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/" + NormalLoc);
 
 		Mesh LoadedObj(&LoadedVerts[0], LoadedVerts.size(), &Indecies[0], Indecies.size());
+		LoadedObj.m_transform.SetScale(vec3(0.35f));
+		
+		
+
+
+		//create depth texutre
+
+
+		GLuint depthMapFBO;
+		glGenFramebuffers(1, &depthMapFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+
+		GLuint shadowMapID;
+		int ShadowWidth = 2048;
+		int ShadowHeight = 2048;
+
+		glGenTextures(1, &shadowMapID);
+		glBindTexture(GL_TEXTURE_2D, shadowMapID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, ShadowWidth, ShadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		GLfloat borderColor[]{ 1,1,1,1 };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMapID, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			cerr << "ERROR Frame buffer is incomplete" << endl;
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
+
+
+
 
 		
-		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
-		glViewport(0, 0, 800, 600);
-
-
-
 	//Window Loop
 	while (true)
 	{
-		
+		glViewport(0, 0, ShadowWidth, ShadowHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
+		glViewport(0, 0, 800, 600);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+		GLfloat near_plane = 1.0f, far_plane = 100.f;
+		glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
+		glm::mat4 lightView = glm::lookAt(light->GetTransform().GetPosition(), vec3(0), vec3(0, 1, 0));
+		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -176,7 +223,19 @@ int main()
 			{
 				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(-0.1, 0, 0));
 			}
-		
+
+			if (event.type == SDL_MOUSEWHEEL)
+			{
+				if (event.wheel.y > 0)
+				{
+					cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0, 1));
+				}
+				else
+					if (event.wheel.y < 0)
+					{
+						cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0, -1));
+					}
+			}
 
 
 			
@@ -189,23 +248,26 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		GLuint TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_diffuse");
 		glUniform1i(TextureLoc, 0);
-		glBindTexture(GL_TEXTURE_2D, DiffuseTextureID);
+		glBindTexture(GL_TEXTURE_2D, DiffuseTexID); //DiffuseTextureID
 		
 
 		glActiveTexture(GL_TEXTURE1);
 		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_normal");
 		glUniform1i(TextureLoc, 1);
-		glBindTexture(GL_TEXTURE_2D,NormalTextureID);
-		//basicShader->Update(Square1.m_transform, *light);
-		//Square1.Draw();
+		glBindTexture(GL_TEXTURE_2D, NormalTexID); //NormalTexID
+		basicShader->Update(Square1.m_transform, *light);
+		Square1.Draw();
 
-		//Loaded object
-		//Giving the loaded object the diffuse
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, DiffuseTexID);
-		//Giving the loaded object the normal
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, NormalTexID);
+		////Loaded object
+		////Giving the loaded object the diffuse
+		//glActiveTexture(GL_TEXTURE2);
+		//TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "textOther");
+		//glUniform1i(TextureLoc, 2);
+		//glBindTexture(GL_TEXTURE_2D, DiffuseTexID);
+		//
+		////Giving the loaded object the normal
+		//glActiveTexture(GL_TEXTURE3);
+		//glBindTexture(GL_TEXTURE_2D, NormalTexID);
 
 		basicShader->Update(LoadedObj.m_transform, *light);
 

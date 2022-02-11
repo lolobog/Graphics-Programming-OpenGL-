@@ -148,23 +148,25 @@ vector<Vertex> OBJLoader::LoadOBJ(const string Filename,const string& FolderLoc,
 										vertsInFace[2].Normal = VertPositions[TmpNormals[2] - 1];
 
 										FinalVerts.push_back(vertsInFace[0]);
-										FinalVerts.push_back(vertsInFace[0]);
-										FinalVerts.push_back(vertsInFace[0]);
+										FinalVerts.push_back(vertsInFace[1]);
+										FinalVerts.push_back(vertsInFace[2]);
 									}
 			}
 
-			for (int i = 0; i < FinalVerts.size(); i++)
-			{
-				indicies.push_back(i);
-			}
+			
 
-		}
+		}//while file good
 	}
 	else
 	{
 		cerr << "Unable to load text file: " << FolderLoc + "/" + Filename << endl;
 	}
 	
+	for (int i = 0; i < FinalVerts.size(); i++)
+	{
+		indicies.push_back(i);
+	}
+
 	return FinalVerts;
 }
 
