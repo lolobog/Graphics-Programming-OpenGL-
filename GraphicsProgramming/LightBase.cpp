@@ -25,19 +25,19 @@ void LightBase::Draw(Camera* Cam)
 
 	glColor3f(1, 0, 0);
 	glVertex3fv(&p1.x);
-	p2 = p1 + glm::vec3(1, 0, 0) * 0.1f;
+	p2 = p1 + glm::vec3(1, 0, 0) * 0.5f;
 	glColor3f(1, 0, 0);
 	glVertex3fv(&p2.x);
 
 	glColor3f(0, 1, 0);
 	glVertex3fv(&p1.x);
-	p2 = p1 + glm::vec3(0, 1, 0) * 0.1f;
+	p2 = p1 + glm::vec3(0, 1, 0) * 0.5f;
 	glColor3f(0, 1, 0);
 	glVertex3fv(&p2.x);
 
 	glColor3f(0, 0, 1);
 	glVertex3fv(&p1.x);
-	p2 = p1 + glm::vec3(0, 0, 1) * 0.1f;
+	p2 = p1 + glm::vec3(0, 0, 1) * 0.5f;
 	glColor3f(0, 0, 1);
 	glVertex3fv(&p2.x);
 

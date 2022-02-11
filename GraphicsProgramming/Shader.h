@@ -15,7 +15,7 @@ public:
 	Shader(const string FileLocation, Camera& camera);
 	~Shader();
 
-	void Update(Transform& transform,LightBase& light);
+	void Update(Transform& transform,LightBase& light,glm::mat4 LightSpaceMatrix);
 	void Bind();
 	GLuint GetProgram() { return m_program; }
 

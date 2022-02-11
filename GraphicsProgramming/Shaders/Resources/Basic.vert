@@ -10,17 +10,28 @@ in vec3 BiTangent;
 uniform mat4 model;
 uniform mat4 perspective;
 uniform mat4 view;
-
+uniform mat4 lightSpaceMatrix;
 
 out vec2 FragTextureCoord;
 out vec3 FragColorIn;
 out vec3 FragNormal;
 out vec3 FragPos;
 out mat3 TBN;
+out vec4 FragPosLightSpace;
+//out vec3 VsNormal;
+
 void main()
 {
-FragPos=vec3(model*vec4(VectorPosition,1.0f));
-FragNormal=mat3(transpose(inverse(model)))*Normal;
+
+
+
+		////
+		FragPos=vec3(model*vec4(VectorPosition,1.0f));
+		FragNormal=mat3(transpose(inverse(model)))*Normal;
+		////
+		FragPosLightSpace=lightSpaceMatrix*vec4(FragPos,1.0);
+		//VsNormal = Normal;
+
 		FragColorIn=Color;
 		FragTextureCoord=TextureCoord;
 		gl_Position= perspective * view * model *vec4(VectorPosition,1.0) ; 

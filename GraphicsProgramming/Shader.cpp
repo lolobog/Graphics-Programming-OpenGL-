@@ -12,7 +12,7 @@ Shader::~Shader()
 	glDeleteProgram(m_program);
 }
 
-void Shader::Update(Transform& transform,LightBase& light)
+void Shader::Update(Transform& transform,LightBase& light, glm::mat4 LightSpaceMatrix)
 {
 	mat4 projection = m_camera->GetPerspective();
 	mat4 view = m_camera->CalculateViewMatrix();
@@ -21,6 +21,7 @@ void Shader::Update(Transform& transform,LightBase& light)
 	glUniformMatrix4fv(m_uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
 	glUniformMatrix4fv(m_uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_program, "lightSpaceMatrix"), 1, GL_FALSE, &LightSpaceMatrix[0][0]);
 
 	glUniform3f(m_uniforms[FRAG_CAMERAPOS_U], m_camera->GetTransform().GetPosition().x,
 		m_camera->GetTransform().GetPosition().y,
@@ -43,7 +44,8 @@ void Shader::Bind()
 
 void Shader::UpdateForShadow(Transform& transform, glm::mat4& LightSpaceMatrix)
 {
-	glUniformMatrix4fv(glGetUniformLocation(m_program,))
+	glUniformMatrix4fv(glGetUniformLocation(m_program, "model"), 1, GL_FALSE, &transform.GetModel()[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_program, "lightSpaceMatrix"), 1, GL_FALSE, &LightSpaceMatrix[0][0]);
 }
 
 static GLuint CreateShader(const string& ShaderSource, GLenum shaderType)

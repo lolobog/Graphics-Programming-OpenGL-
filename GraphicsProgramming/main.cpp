@@ -105,7 +105,7 @@ int main()
 	
 
 	LightBase* light=new LightBase() ;
-	light->GetTransform().SetPosition(vec3(0, 0, -2));
+	light->GetTransform().SetPosition(vec3(5, 15, -15));
 
 
 	
@@ -196,12 +196,23 @@ int main()
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
 		glViewport(0, 0, 800, 600);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		depthShader->Bind();
 
 		GLfloat near_plane = 1.0f, far_plane = 100.f;
 		glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
 		glm::mat4 lightView = glm::lookAt(light->GetTransform().GetPosition(), vec3(0), vec3(0, 1, 0));
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+		depthShader->UpdateForShadow(LoadedObj.m_transform, lightSpaceMatrix);
+		glCullFace(GL_FRONT);
+		Square1.Draw();
+		LoadedObj.Draw();
+
+
+
+		glCullFace(GL_BACK);
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -242,6 +253,13 @@ int main()
 				
 		}
 		
+		//reset
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glClear(GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
+		glViewport(0, 0, 800, 600);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		basicShader->Bind();
 		//Created object
@@ -255,7 +273,16 @@ int main()
 		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_normal");
 		glUniform1i(TextureLoc, 1);
 		glBindTexture(GL_TEXTURE_2D, NormalTexID); //NormalTexID
-		basicShader->Update(Square1.m_transform, *light);
+		basicShader->Update(Square1.m_transform, *light,lightSpaceMatrix);
+
+		glActiveTexture(GL_TEXTURE2);
+		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_Shadow");
+		glUniform1i(TextureLoc, 2);
+		glBindTexture(GL_TEXTURE_2D, shadowMapID); 
+	
+		
+		glCullFace(GL_FRONT);
+
 		Square1.Draw();
 
 		////Loaded object
@@ -269,9 +296,13 @@ int main()
 		//glActiveTexture(GL_TEXTURE3);
 		//glBindTexture(GL_TEXTURE_2D, NormalTexID);
 
-		basicShader->Update(LoadedObj.m_transform, *light);
+		basicShader->Update(LoadedObj.m_transform, *light,lightSpaceMatrix);
 
 		LoadedObj.Draw();
+
+		glCullFace(GL_BACK);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		light->Draw(&cam);
 		
