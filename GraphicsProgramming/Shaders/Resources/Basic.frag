@@ -57,7 +57,7 @@ void main()
 
 	
 	//diffuse
-	//vec3 fragnormal=normalize(FragNormal);
+	vec3 fragnormal=normalize(FragNormal);
 	vec3 normal=normalize(texture2D(texture_normal,FragTextureCoord).rgb);
 	normal=normalize(normal*2.0-1.0);
 	normal=normalize(TBN*normal);
@@ -70,15 +70,13 @@ void main()
 	float specularStrength=1f;
 	vec3 viewDir=normalize( FragCamPos - FragPos);
 	vec3 reflectDir=reflect(lightDir,viewDir);
-	float spec=pow(max(dot(reflectDir,normal),0.0),32);
+	float spec=pow(max(dot(reflectDir,normal),0.0),20);
 	vec3 specular = vec3(specularStrength*spec);
 
 
 	float shadow=CalculateShadowValue();
 	vec4 result=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb*(ambient+(1.0-shadow)*(diffuse+specular)),1);
-	//result=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb*(ambient*(diffuse+specular)),1);
-	//result=vec4(texture2D(texture_Shadow,FragTextureCoord).rgb,1);
-	result=vec4(vec3((shadow),0,0),1);
+	result=vec4(texture2D(texture_diffuse,FragTextureCoord).rgb*(ambient+diffuse+specular),1);
 	frag_colour=result;
 	
 
