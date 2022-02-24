@@ -11,7 +11,11 @@
 #include <vector>
 #include"LightBase.h"
 #include "ObjectLoader.h"
-
+#include "../Libraries/imgui-master/imgui.h"
+#include "../Libraries/imgui-master/imgui_internal.h"
+#include "../Libraries/imgui_sdl-master/imgui_sdl.h"
+#include "../Libraries/imgui-master/backends/imgui_impl_sdl.h"
+#include "../imgui-master/backends/imgui_impl_opengl3.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -69,9 +73,63 @@ int main()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16 );
 
+	SDL_Renderer* renderer = nullptr;
+	SDL_Window* window = nullptr;
+	int screenHeight = 1080;
+	int screenWidth = 1440;
+	int menuHeight = 20;
+
 	//Window Creation
-	SDL_Window* window = SDL_CreateWindow("My window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	window = SDL_CreateWindow("My window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	SDL_GLContext GLContext = SDL_GL_CreateContext(window);
+
+
+	
+
+	if (!window)
+	{
+		printf("WINDOW initialisation failed: %s/n");
+		printf("Press any key to continue/n");
+		getchar();
+	}
+
+	renderer= SDL_CreateRenderer(
+		window,
+		-1,
+		0
+	);
+
+	if (!renderer)
+	{
+		printf("WINDOW initialisation failed: %s/n");
+		printf("Press any key to continue/n");
+		getchar();
+	}
+
+	//imGui Initialize
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_CreateContext(window));
+	ImGui_ImplOpenGL3_Init();
+	
+	
+	ImGui::StyleColorsDark();
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.Colors[ImGuiCol_WindowBg] = ImColor(16, 16, 16);
+	style.Colors[ImGuiCol_ChildBg] = ImColor(24, 24, 24);
+	style.Colors[ImGuiCol_Text] = ImColor(255, 255, 255);
+	style.Colors[ImGuiCol_Header]= ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_HeaderActive] = ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_HeaderHovered] = ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_MenuBarBg] = ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_TabActive] = ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_TitleBgActive]= ImColor(50, 50,50);
+
+	io.Fonts->AddFontFromFileTTF(".\\Assets\\ComicSans.ttf",16.0f);
+
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 
 	//Initializing GLEW
 	glewExperimental = GL_TRUE;
@@ -195,7 +253,7 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
-		glViewport(0, 0, 800, 600);
+		glViewport(0, 0, screenWidth, screenHeight);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -210,9 +268,36 @@ int main()
 		Square1.Draw();
 		LoadedObj.Draw();
 
-
-
 		glCullFace(GL_BACK);
+
+		//Imgui Menu
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(window);
+		ImGui::NewFrame();
+	
+		ImGui::ShowDemoWindow();
+		{
+			
+			ImGui::Begin("Menu");
+			{
+				ImGui::PushStyleColor(ImGuiCol_Border, ImColor(0, 0, 0, 255).Value);
+				ImGui::BeginChild("##LeftSide",ImVec2(120,ImGui::GetContentRegionAvail().y),true);
+				{
+					ImGui::Text("Test");
+				}
+				ImGui::EndChild();
+				
+				ImGui::BeginChild("##RightSide", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true);
+				{
+					ImGui::Text("Test");
+				}
+				ImGui::EndChild();
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+			
+		}
+
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -220,31 +305,31 @@ int main()
 			const Uint8* keyState = SDL_GetKeyboardState(NULL);
 			if (keyState[SDL_SCANCODE_W])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, -0.1, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, -1, 0));
 			}
 			if (keyState[SDL_SCANCODE_S])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0.1, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 1, 0));
 			}
 			if (keyState[SDL_SCANCODE_D])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0.1, 0, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() - normalize(cam.GetRightVector()));
 			}
 			if (keyState[SDL_SCANCODE_A])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(-0.1, 0, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + normalize(cam.GetRightVector()));
 			}
 
 			if (event.type == SDL_MOUSEWHEEL)
 			{
 				if (event.wheel.y > 0)
 				{
-					cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0, 1));
+					cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + normalize(cam.GetForwardVector()));
 				}
 				else
 					if (event.wheel.y < 0)
 					{
-						cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 0, -1));
+						cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() - normalize(cam.GetForwardVector()));
 					}
 			}
 
@@ -258,7 +343,7 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClear(GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
-		glViewport(0, 0, 800, 600);
+		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		basicShader->Bind();
@@ -308,14 +393,25 @@ int main()
 		
 		
 		
-		SDL_Delay(16);
+		//SDL_Delay(16);
+		
+		
+	
+	
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(window);
 		
 	}
 
 
+	
+	
+
 	//Clean up of all the objects
-	SDL_GL_DeleteContext(GLContext);
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 	SDL_DestroyWindow(window);
 	window = NULL;
 	SDL_Quit();

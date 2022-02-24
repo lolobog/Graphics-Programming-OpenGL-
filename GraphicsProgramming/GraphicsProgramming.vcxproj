@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\GraphicsProgramming\Libraries\imgui_sdl-master;D:\GraphicsProgramming\Libraries\imgui-master;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,7 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Libraries\glew-2.1.0\include\GL;..\Libraries\glm-master\glm;..\Libraries\SDL2-2.0.18\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\glew-2.1.0\include\GL;..\Libraries\glm-master\glm;..\Libraries\SDL2-2.0.18\include;D:\GraphicsProgramming\Libraries\imgui_sdl-master;D:\GraphicsProgramming\Libraries\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +143,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Libraries\imgui-master\backends\imgui_impl_opengl2.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\backends\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\imgui.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\imgui_demo.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\imgui_tables.cpp" />
+    <ClCompile Include="..\Libraries\imgui-master\imgui_widgets.cpp" />
+    <ClCompile Include="..\Libraries\imgui_sdl-master\imgui_sdl.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="LightBase.cpp" />
     <ClCompile Include="main.cpp" />
@@ -152,6 +162,17 @@
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Libraries\imgui-master\backends\imgui_impl_opengl2.h" />
+    <ClInclude Include="..\Libraries\imgui-master\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\Libraries\imgui-master\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\Libraries\imgui-master\backends\imgui_impl_sdl.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imconfig.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imgui.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imgui_internal.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imstb_rectpack.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imstb_textedit.h" />
+    <ClInclude Include="..\Libraries\imgui-master\imstb_truetype.h" />
+    <ClInclude Include="..\Libraries\imgui_sdl-master\imgui_sdl.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="LightBase.h" />
     <ClInclude Include="mesh.h" />
