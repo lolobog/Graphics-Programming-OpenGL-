@@ -2,7 +2,7 @@
 
 in vec3 VectorPosition;
 in vec2 TextureCoord;
-in vec3 Color;
+//in vec3 Color;
 in vec3 Normal;
 in vec3 Tangent;
 in vec3 BiTangent;
@@ -28,11 +28,12 @@ void main()
 		////
 		FragPos=vec3(model*vec4(VectorPosition,1.0f));
 		FragNormal=mat3(transpose(inverse(model)))*Normal;
+		FragNormal=Normal;
 		////
 		FragPosLightSpace=lightSpaceMatrix*vec4(FragPos,1.0);
 		//VsNormal = Normal;
 
-		FragColorIn=Color;
+		//FragColorIn=Color;
 		FragTextureCoord=TextureCoord;
 		gl_Position= perspective * view * model *vec4(VectorPosition,1.0) ; 
 

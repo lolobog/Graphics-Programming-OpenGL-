@@ -21,9 +21,9 @@ void SpriteSheet::drawSprite(float posX, float posY, int frameIndex) {
 
     // ... Bind the texture, enable the proper arrays
 
-    glVertexPointer(2, GL_FLOAT, *verts);
+   /* glVertexPointer(2, GL_FLOAT, *verts);
     glTexCoordPointer(2, GL_FLOAT, *texVerts);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);*/
 }
 
-};
+
