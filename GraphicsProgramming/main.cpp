@@ -263,9 +263,7 @@ int main()
 		glViewport(0, 0, ShadowWidth, ShadowHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
-		glViewport(0, 0, screenWidth, screenHeight);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 
 
 		depthShader->Bind();
@@ -276,7 +274,7 @@ int main()
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 		depthShader->UpdateForShadow(LoadedObj.m_transform, lightSpaceMatrix);
 		glCullFace(GL_FRONT);
-		Square1.Draw();
+		//Square1.Draw();
 		LoadedObj.Draw();
 
 		glCullFace(GL_BACK);

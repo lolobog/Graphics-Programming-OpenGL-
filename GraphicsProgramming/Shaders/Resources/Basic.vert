@@ -18,28 +18,30 @@ out vec3 FragNormal;
 out vec3 FragPos;
 out mat3 TBN;
 out vec4 FragPosLightSpace;
-//out vec3 VsNormal;
+out vec3 VsNormal;
 
 void main()
 {
 
 
+vec3 T = normalize(vec3(model* vec4(Tangent, 0.0)));
+	vec3 B = normalize(vec3(model* vec4(BiTangent, 0.0)));
+	vec3 N = normalize(vec3(model* vec4(Normal, 0.0)));	
+	//T = normalize(T - dot(T, N) * N);
 
-		////
-		FragPos=vec3(model*vec4(VectorPosition,1.0f));
-		FragNormal=mat3(transpose(inverse(model)))*Normal;
-		FragNormal=Normal;
-		////
-		FragPosLightSpace=lightSpaceMatrix*vec4(FragPos,1.0);
-		//VsNormal = Normal;
+	TBN = mat3(T,B,N);
+	
+	//TBN = transpose(mat3(T,B,N));
 
-		//FragColorIn=Color;
-		FragTextureCoord=TextureCoord;
-		gl_Position= perspective * view * model *vec4(VectorPosition,1.0) ; 
+////
+	FragPos = vec3(model*  vec4(VectorPosition, 1.0f));
+	FragNormal = mat3(transpose(inverse(model))) *Normal;
+////
+	FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
+	VsNormal = Normal;
 
-		vec3 T=normalize(vec3(model*vec4(Tangent,0.0)));
-		vec3 B=normalize(vec3(model*vec4(BiTangent,0.0)));
-		vec3 N=normalize(vec3(model*vec4(Normal,0.0)));
 
-		TBN=mat3(T,B,N);
+	
+	FragTextureCoord = TextureCoord;
+	gl_Position = perspective * view * model * vec4(VectorPosition, 1.0);
 };

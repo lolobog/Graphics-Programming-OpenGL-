@@ -1,4 +1,9 @@
-﻿  mesh.cpp
-D:\GraphicsProgramming\GraphicsProgramming\mesh.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
-D:\GraphicsProgramming\GraphicsProgramming\mesh.cpp(100,22): warning C4018: '<': signed/unsigned mismatch
+﻿  main.cpp
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(23,1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(91,10): warning C4473: 'printf' : not enough arguments passed for format string
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(91,10): message : placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(91,10): message : the missing variadic argument 1 is required by format string '%s'
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(104,10): warning C4473: 'printf' : not enough arguments passed for format string
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(104,10): message : placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+D:\GraphicsProgramming\GraphicsProgramming\main.cpp(104,10): message : the missing variadic argument 1 is required by format string '%s'
   GraphicsProgramming.vcxproj -> D:\GraphicsProgramming\Debug\GraphicsProgramming.exe
