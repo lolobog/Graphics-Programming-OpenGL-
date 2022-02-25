@@ -126,6 +126,10 @@ int main()
 	style.Colors[ImGuiCol_MenuBarBg] = ImColor(40, 40, 40);
 	style.Colors[ImGuiCol_TabActive] = ImColor(40, 40, 40);
 	style.Colors[ImGuiCol_TitleBgActive]= ImColor(50, 50,50);
+	style.Colors[ImGuiCol_SliderGrab]= ImColor(50, 50, 50);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImColor(60, 60, 60);
+	style.Colors[ImGuiCol_Button]= ImColor(40, 40, 40);
+	style.Colors[ImGuiCol_ButtonActive] = ImColor(50, 50, 50);
 
 	io.Fonts->AddFontFromFileTTF(".\\Assets\\ComicSans.ttf",16.0f);
 
@@ -173,6 +177,12 @@ int main()
 
 	
 		Camera cam;
+		vec3 camera1=vec3(0, 10, -40);  
+		vec3 camera2=vec3(40, 10, 0);
+		vec3 camera3=vec3(-40, 10, 0);
+		vec3 camera4=vec3(0, 10, 40);	
+
+
 		Shader* basicShader = new Shader( "D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/Basic", cam);
 		Shader* depthShader = new Shader("D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/DepthShader", cam);
 		GLuint DiffuseTextureID=LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Textures/brickwall.jpg");
@@ -204,6 +214,7 @@ int main()
 
 		Mesh LoadedObj(&LoadedVerts[0], LoadedVerts.size(), &Indecies[0], Indecies.size());
 		LoadedObj.m_transform.SetScale(vec3(0.35f));
+		
 		
 		
 
@@ -281,15 +292,53 @@ int main()
 			ImGui::Begin("Menu");
 			{
 				ImGui::PushStyleColor(ImGuiCol_Border, ImColor(0, 0, 0, 255).Value);
-				ImGui::BeginChild("##LeftSide",ImVec2(120,ImGui::GetContentRegionAvail().y),true);
+				ImGui::BeginChild("##LeftSide",ImVec2(240,ImGui::GetContentRegionAvail().y),true);
 				{
-					ImGui::Text("Test");
+					ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Scene Objects");
+					ImGui::Text("Cube");
+					ImGui::SliderFloat("Cube X", LoadedObj.m_transform.xRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Cube Y", LoadedObj.m_transform.yRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Cube Z", LoadedObj.m_transform.zRef, -50.0f, 50.0f);
+					ImGui::Text("Platform");
+					ImGui::SliderFloat("Platform X", Square1.m_transform.xRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Platform Y", Square1.m_transform.yRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Platform Z", Square1.m_transform.zRef, -50.0f, 50.0f);
+					ImGui::Text("Light"); 
+					ImGui::SliderFloat("Light X", light->GetTransform().xRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Light Y", light->GetTransform().yRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Light Z", light->GetTransform().zRef, -50.0f, 50.0f);
 				}
 				ImGui::EndChild();
 				
+				{
+					ImGui::SameLine();
+					ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+					ImGui::SameLine();
+				}
+
 				ImGui::BeginChild("##RightSide", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y), true);
 				{
-					ImGui::Text("Test");
+					ImGui::Text("Cameras");
+					if (ImGui::SmallButton("Camera Front")) 
+					{
+						cam.GetTransform().SetPosition(camera1);
+						
+					}
+					if (ImGui::SmallButton("Camera Left"))
+					{
+						cam.GetTransform().SetPosition(camera2);
+						
+					}
+					if (ImGui::SmallButton("Camera Right"))
+					{
+						cam.GetTransform().SetPosition(camera3);
+						
+					}
+					if (ImGui::SmallButton("Camera Back"))
+					{
+						cam.GetTransform().SetPosition(camera4);
+						
+					}
 				}
 				ImGui::EndChild();
 				ImGui::PopStyleColor();
@@ -305,11 +354,11 @@ int main()
 			const Uint8* keyState = SDL_GetKeyboardState(NULL);
 			if (keyState[SDL_SCANCODE_W])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, -1, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + normalize(cam.GetUpVector()));
 			}
 			if (keyState[SDL_SCANCODE_S])
 			{
-				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() + vec3(0, 1, 0));
+				cam.GetTransform().SetPosition(cam.GetTransform().GetPosition() - normalize(cam.GetUpVector()));
 			}
 			if (keyState[SDL_SCANCODE_D])
 			{

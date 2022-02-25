@@ -43,6 +43,6 @@ private:
 	vec3 up;
 	vec3 right;
 	float fov = 45;
-	float f = float(800.0f / 600.0f);
+	float f = float(1440.0f / 1080.0f);
 	mat4 perspective=glm::perspective(fov,f,1.0f,1000.0f);
 };

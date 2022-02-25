@@ -15,7 +15,9 @@ public:
 
 		~Transform();
 
-
+		float* xRef = &m_position.x;
+		float* yRef = &m_position.y;
+		float* zRef = &m_position.z;
 	
 	vec3 GetPosition() { return m_position; }
 	void SetPosition(vec3 _positon) { 
