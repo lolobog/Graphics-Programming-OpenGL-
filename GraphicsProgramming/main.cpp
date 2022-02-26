@@ -169,6 +169,9 @@ int main()
 	LightBase* light=new LightBase() ;
 	light->GetTransform().SetPosition(vec3(5, 15, -15));
 
+	LightBase* secondLight = new LightBase();
+	secondLight->GetTransform().SetPosition(vec3(15, 15, 0));
+	bool enableSecondLight = false;
 
 	
 
@@ -183,15 +186,18 @@ int main()
 		vec3 camera4=vec3(0, 10, 40);	
 
 
-		Shader* basicShader = new Shader( "D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/Basic", cam);
-		Shader* depthShader = new Shader("D:/GraphicsProgramming/GraphicsProgramming/Shaders/Resources/DepthShader", cam);
-		GLuint DiffuseTextureID=LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Textures/brickwall.jpg");
-		GLuint NormalTextureID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Textures/brickwall_normal.jpg");
+		Shader* basicShader = new Shader( "./Shaders/Resources/Basic", cam);
+		Shader* depthShader = new Shader("./Shaders/Resources/DepthShader", cam);
+
+		GLuint DiffuseTextureID=LoadTexture("./Textures/brickwall.jpg");
+		GLuint NormalTextureID = LoadTexture("./Textures/brickwall_normal.jpg");
 		Mesh Square1(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 		Square1.m_transform.SetScale(vec3(60));
 		Square1.m_transform.SetRotation(vec3(glm::radians(90.0f), 0.0f, 0.0f));
 		Square1.m_transform.SetPosition(vec3(0, 60, 0));
 
+
+		Mesh SpriteSheet(&SquareVerticies[0], SquareVerticies.size(), &SquareIndecies[0], 6);
 		
 		//string* AmbiantLoc = new string("");
 		//string* DiffuseLoc = new string("");
@@ -205,12 +211,12 @@ int main()
 
 		vector<uint>Indecies;
 
-		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","D:/GraphicsProgramming/GraphicsProgramming/Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
+		vector<Vertex>LoadedVerts = OBJLoader::LoadOBJ("blocks_01.obj","./Objects",AmbiantLoc,DiffuseLoc,SpecLoc,NormalLoc,Indecies);
 		
-		GLuint AmbiantTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/" + AmbiantLoc);
-		GLuint DiffuseTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/"+ DiffuseLoc);
-		GLuint SpecularTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/"+ SpecLoc);
-		GLuint NormalTexID = LoadTexture("D:/GraphicsProgramming/GraphicsProgramming/Objects/" + NormalLoc);
+		GLuint AmbiantTexID = LoadTexture("./Objects/" + AmbiantLoc);
+		GLuint DiffuseTexID = LoadTexture("./Objects/"+ DiffuseLoc);
+		GLuint SpecularTexID = LoadTexture("./Objects/"+ SpecLoc);
+		GLuint NormalTexID = LoadTexture("./Objects/" + NormalLoc);
 
 		Mesh LoadedObj(&LoadedVerts[0], LoadedVerts.size(), &Indecies[0], Indecies.size());
 		LoadedObj.m_transform.SetScale(vec3(0.35f));
@@ -271,7 +277,9 @@ int main()
 		GLfloat near_plane = 1.0f, far_plane = 100.f;
 		glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
 		glm::mat4 lightView = glm::lookAt(light->GetTransform().GetPosition(), vec3(0), vec3(0, 1, 0));
+		glm::mat4 secondLightView = glm::lookAt(secondLight->GetTransform().GetPosition(), vec3(0), vec3(0, 1, 0));
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+		glm::mat4 secondLightSpaceMatrix = lightProjection * secondLightView;
 		depthShader->UpdateForShadow(LoadedObj.m_transform, lightSpaceMatrix);
 		glCullFace(GL_FRONT);
 		//Square1.Draw();
@@ -297,6 +305,10 @@ int main()
 					ImGui::SliderFloat("Cube X", LoadedObj.m_transform.xRef, -50.0f, 50.0f);
 					ImGui::SliderFloat("Cube Y", LoadedObj.m_transform.yRef, -50.0f, 50.0f);
 					ImGui::SliderFloat("Cube Z", LoadedObj.m_transform.zRef, -50.0f, 50.0f);
+					ImGui::Text("Sprite Sheet");
+					ImGui::SliderFloat("Sprite Sheet X", SpriteSheet.m_transform.xRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Sprite Sheet Y", SpriteSheet.m_transform.yRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("Sprite Sheet Z", SpriteSheet.m_transform.zRef, -50.0f, 50.0f);
 					ImGui::Text("Platform");
 					ImGui::SliderFloat("Platform X", Square1.m_transform.xRef, -50.0f, 50.0f);
 					ImGui::SliderFloat("Platform Y", Square1.m_transform.yRef, -50.0f, 50.0f);
@@ -305,6 +317,11 @@ int main()
 					ImGui::SliderFloat("Light X", light->GetTransform().xRef, -50.0f, 50.0f);
 					ImGui::SliderFloat("Light Y", light->GetTransform().yRef, -50.0f, 50.0f);
 					ImGui::SliderFloat("Light Z", light->GetTransform().zRef, -50.0f, 50.0f);
+					ImGui::Text("Second Light");
+					ImGui::Checkbox("Enable Second Light(might break shadow)", &enableSecondLight);
+					ImGui::SliderFloat("2nd Light X", secondLight->GetTransform().xRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("2nd Light Y", secondLight->GetTransform().yRef, -50.0f, 50.0f);
+					ImGui::SliderFloat("2nd Light Z", secondLight->GetTransform().zRef, -50.0f, 50.0f);
 				}
 				ImGui::EndChild();
 				
@@ -406,6 +423,8 @@ int main()
 		glUniform1i(TextureLoc, 1);
 		glBindTexture(GL_TEXTURE_2D, NormalTexID); //NormalTexID
 		basicShader->Update(Square1.m_transform, *light,lightSpaceMatrix);
+		if (enableSecondLight)
+		basicShader->Update(Square1.m_transform, *secondLight, secondLightSpaceMatrix);
 
 		glActiveTexture(GL_TEXTURE2);
 		TextureLoc = glGetUniformLocation(basicShader->GetProgram(), "texture_Shadow");
@@ -417,6 +436,11 @@ int main()
 
 		Square1.Draw();
 
+		SpriteSheet.Draw();
+
+		basicShader->Update(SpriteSheet.m_transform, *light, lightSpaceMatrix);
+		if (enableSecondLight)
+		basicShader->Update(Square1.m_transform, *secondLight, secondLightSpaceMatrix);
 		////Loaded object
 		////Giving the loaded object the diffuse
 		//glActiveTexture(GL_TEXTURE2);
@@ -429,7 +453,7 @@ int main()
 		//glBindTexture(GL_TEXTURE_2D, NormalTexID);
 
 		basicShader->Update(LoadedObj.m_transform, *light,lightSpaceMatrix);
-
+		
 		LoadedObj.Draw();
 
 		glCullFace(GL_BACK);
@@ -437,7 +461,9 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		light->Draw(&cam);
-		
+
+		if(enableSecondLight)
+			secondLight->Draw(&cam);
 		
 		
 		//SDL_Delay(16);

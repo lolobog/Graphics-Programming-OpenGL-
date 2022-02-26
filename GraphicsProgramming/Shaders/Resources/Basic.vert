@@ -2,7 +2,6 @@
 
 in vec3 VectorPosition;
 in vec2 TextureCoord;
-//in vec3 Color;
 in vec3 Normal;
 in vec3 Tangent;
 in vec3 BiTangent;
@@ -27,16 +26,16 @@ void main()
 vec3 T = normalize(vec3(model* vec4(Tangent, 0.0)));
 	vec3 B = normalize(vec3(model* vec4(BiTangent, 0.0)));
 	vec3 N = normalize(vec3(model* vec4(Normal, 0.0)));	
-	//T = normalize(T - dot(T, N) * N);
+
 
 	TBN = mat3(T,B,N);
 	
-	//TBN = transpose(mat3(T,B,N));
+	
 
-////
+
 	FragPos = vec3(model*  vec4(VectorPosition, 1.0f));
 	FragNormal = mat3(transpose(inverse(model))) *Normal;
-////
+
 	FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 	VsNormal = Normal;
 
