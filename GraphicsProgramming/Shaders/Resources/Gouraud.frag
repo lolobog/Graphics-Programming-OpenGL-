@@ -2,11 +2,12 @@
 
 precision mediump float;       
                               
-varying vec4 v_Color;          
-                               
+in vec4 v_Color;          
+                   
+out vec4 frag_colour;
  
 // The entry point for our fragment shader.
 void main()
 {
-    gl_FragColor = v_Color;    
+    frag_colour = v_Color;    
 }

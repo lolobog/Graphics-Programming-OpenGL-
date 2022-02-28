@@ -1,19 +1,15 @@
 #version 450
 
 in vec3 VectorPosition;
-in vec2 TextureCoord;
 in vec3 Normal;
-in vec3 Tangent;
-in vec3 BiTangent;
 
 uniform mat4 model;
 uniform mat4 perspective;
 uniform mat4 view;
-uniform mat4 lightSpaceMatrix;
 uniform vec3 lightPos;
 uniform vec4 lightColor;
 
-varying vec4 v_Color;
+out vec4 v_Color;
 
 void main()
 {

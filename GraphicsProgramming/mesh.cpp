@@ -119,12 +119,6 @@ Mesh::Mesh(Vertex* verts, unsigned int vertCount, unsigned int* indices, unsigne
 	glVertexAttribPointer(TEXCOORD_VB, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(TEXCOORD_VB);
 
-	//Color info
-	/*glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferObjects[COLOR_VB]);
-	glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(colorInfo[0]), &colorInfo[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(COLOR_VB, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(COLOR_VB);*/
-
 	//Normal calculations
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferObjects[NORMAL_VB]);
 	glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(Normals[0]), &Normals[0], GL_STATIC_DRAW);

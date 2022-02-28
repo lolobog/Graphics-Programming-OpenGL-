@@ -11,11 +11,11 @@
 #include <vector>
 #include"LightBase.h"
 #include "ObjectLoader.h"
-#include "../Libraries/imgui-master/imgui.h"
-#include "../Libraries/imgui-master/imgui_internal.h"
-#include "../Libraries/imgui_sdl-master/imgui_sdl.h"
-#include "../Libraries/imgui-master/backends/imgui_impl_sdl.h"
-#include "../imgui-master/backends/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_sdl.h"
+#include "backends/imgui_impl_sdl.h"
+#include "backends/imgui_impl_opengl3.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -222,7 +222,7 @@ int main()
 		vector<Vertex>LoadedVerts2 = OBJLoader::LoadOBJ("blocks_01.obj", "./Objects", AmbiantLoc, DiffuseLoc, SpecLoc, NormalLoc, Indecies2);
 		
 		Mesh Cube(&LoadedVerts2[0], LoadedVerts2.size(), &Indecies2[0], Indecies2.size());
-		Cube.m_transform.SetScale(vec3(0.35f));
+		Cube.m_transform.SetScale(vec3(1.0f));
 		
 		
 
@@ -459,9 +459,9 @@ int main()
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	/*	gouraudShader->Bind();
+		gouraudShader->Bind();
 		gouraudShader->Update(Cube.m_transform, *light, lightSpaceMatrix);
-		Cube.Draw();*/
+		Cube.Draw();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
