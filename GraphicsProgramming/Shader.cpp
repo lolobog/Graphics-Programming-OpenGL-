@@ -23,6 +23,11 @@ void Shader::Update(Transform& transform,LightBase& light, glm::mat4 LightSpaceM
 	glUniformMatrix4fv(m_uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_program, "lightSpaceMatrix"), 1, GL_FALSE, &LightSpaceMatrix[0][0]);
 
+	glUniform3f(glGetUniformLocation(m_program, "lightPos"), light.GetTransform().GetPosition().x, light.GetTransform().GetPosition().y, light.GetTransform().GetPosition().z);
+	glUniform3f(glGetUniformLocation(m_program, "lightColor"), light.M_Color.x,
+		light.M_Color.y,
+		light.M_Color.z);
+	
 	glUniform3f(m_uniforms[FRAG_CAMERAPOS_U], m_camera->GetTransform().GetPosition().x,
 		m_camera->GetTransform().GetPosition().y,
 		m_camera->GetTransform().GetPosition().z);

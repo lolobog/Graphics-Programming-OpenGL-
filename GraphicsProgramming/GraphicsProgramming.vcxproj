@@ -189,6 +189,8 @@
     <None Include="Shaders\Resources\Basic.vert" />
     <None Include="Shaders\Resources\DepthShader.frag" />
     <None Include="Shaders\Resources\DepthShader.vert" />
+    <None Include="Shaders\Resources\Gouraud.frag" />
+    <None Include="Shaders\Resources\Gouraud.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

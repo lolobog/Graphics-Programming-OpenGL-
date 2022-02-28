@@ -23,7 +23,7 @@ void main()
 {
 
 
-vec3 T = normalize(vec3(model* vec4(Tangent, 0.0)));
+	vec3 T = normalize(vec3(model* vec4(Tangent, 0.0)));
 	vec3 B = normalize(vec3(model* vec4(BiTangent, 0.0)));
 	vec3 N = normalize(vec3(model* vec4(Normal, 0.0)));	
 
