@@ -1,4 +1,1 @@
-﻿  mesh.cpp
-C:\Users\Administrator\Documents\GitHub\Graphics-Programming-OpenGL-\GraphicsProgramming\mesh.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Administrator\Documents\GitHub\Graphics-Programming-OpenGL-\GraphicsProgramming\mesh.cpp(100,22): warning C4018: '<': signed/unsigned mismatch
-  GraphicsProgramming.vcxproj -> C:\Users\Administrator\Documents\GitHub\Graphics-Programming-OpenGL-\Debug\GraphicsProgramming.exe
+﻿  GraphicsProgramming.vcxproj -> D:\GraphicsProgramming\Debug\GraphicsProgramming.exe
